@@ -94,7 +94,7 @@ python scripts/sui_chain.py assemblies --summary     # count by type (fastest ov
 
 # Characters (8050+ players, all public)
 python scripts/sui_chain.py character 0xWALLET       # lookup by Sui wallet address
-python scripts/sui_chain.py character 2112084665     # lookup by game ID (slower — scans)
+python scripts/sui_chain.py character <game_id>      # lookup by game ID (slower — scans)
 
 # Network Nodes (3322 total)
 python scripts/sui_chain.py network-nodes            # first 50 with fuel state
@@ -212,7 +212,7 @@ When populated: `{ "name": "0xPKG::module::WitnessStruct" }`.
 ```json
 {
   "char_sui_id": "0xcdf46dbc...",
-  "game_id":     "2112084665",
+  "game_id":     "2112000000",
   "name":        "PlayerName",
   "tribe_id":    98000424,
   "wallet":      "0xWALLET...",

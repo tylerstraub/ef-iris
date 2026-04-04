@@ -18,7 +18,7 @@ Usage:
   python scripts/world_api.py type 77811                    # single type by ID
   python scripts/world_api.py type "Hydrated Sulfide Matrix" # by exact name
   python scripts/world_api.py type fuel                     # partial — shows suggestions
-  python scripts/world_api.py system O58-BSK                # system by name
+  python scripts/world_api.py system EQN-M88                # system by name
   python scripts/world_api.py system 30020654               # system by ID
   python scripts/world_api.py ships                         # list all ship hulls
   python scripts/world_api.py ship 87847                    # full ship stats by ID

@@ -15,6 +15,8 @@ cd ef-iris
 pip install -r requirements.txt
 ```
 
+> **Note:** Examples below use `python`. On macOS/Linux, substitute `python3` if `python` is not found.
+
 That's it. No API keys, no accounts. Both skills hit public endpoints.
 
 First run of `world-api` fetches ~24,500 systems and caches them locally (`~30s`). All subsequent calls are instant SQLite reads.
@@ -39,7 +41,7 @@ Both scripts also work standalone from the project root:
 
 ```bash
 python scripts/world_api.py types --category Asteroid
-python scripts/world_api.py system O58-BSK
+python scripts/world_api.py system EQN-M88
 python scripts/sui_chain.py kills --names
 python scripts/sui_chain.py gates
 ```
@@ -52,10 +54,10 @@ See each script's `--help` or the skill docs in `.claude/skills/` for the full c
 |-------|----------|-----|
 | World API data (types, systems, ships) | `.cache/world_api.sqlite` | 7 days |
 | Tribes | `.cache/world_api.sqlite` | 1 hour |
-| Character names | `.cache/char_cache.sqlite` | Manual rebuild |
+| Character names | `.cache/characters.sqlite` | Manual rebuild |
 
 `.cache/` is gitignored — each user builds their own local cache.
 
 ## Source
 
-These skills are maintained in [SByFrontier](https://github.com/TylerSByFrontier) and synced here via `scripts/sync-ef-iris.py`. Do not edit `scripts/` or `.claude/skills/` directly in this repo — changes will be overwritten on next sync.
+`scripts/` and `.claude/skills/` are synced from an upstream private repo. Do not edit them directly here — changes will be overwritten on next sync.

@@ -18,7 +18,7 @@ Usage:
   python scripts/sui_chain.py gate-events                  # recent gate jump events
   python scripts/sui_chain.py gate-events --limit 50       # more jumps
   python scripts/sui_chain.py character 0xWALLET           # look up character by wallet address
-  python scripts/sui_chain.py character 2112084665         # look up character by game ID
+  python scripts/sui_chain.py character <game_id>           # look up character by game ID
   python scripts/sui_chain.py network-nodes                # all network nodes with fuel state
   python scripts/sui_chain.py ssu <game_id>                # SSU inventory by game ID
   python scripts/sui_chain.py events killmail              # raw events from module
@@ -632,7 +632,7 @@ def get_ssu_inventory(game_id: str) -> dict | None:
 _system_map: dict | None = None
 _type_map:   dict | None = None
 
-_CHAR_CACHE_PATH = Path(".cache/characters.sqlite")
+_CHAR_CACHE_PATH = Path(__file__).parent.parent / ".cache" / "characters.sqlite"
 
 
 def get_system_map() -> dict:

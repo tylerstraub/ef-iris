@@ -56,7 +56,7 @@ python scripts/world_api.py type fuel                      # partial — shows s
 python scripts/world_api.py ores                           # all body type → ore mappings
 
 # Solar systems
-python scripts/world_api.py system O58-BSK                 # by name (returns gateLinks)
+python scripts/world_api.py system EQN-M88                 # by name (returns gateLinks)
 python scripts/world_api.py system 30020654                # by numeric ID
 
 # Ships
@@ -123,7 +123,7 @@ import world_api
 types     = world_api.get_types(category='Asteroid')
 item      = world_api.get_type_by_id(77811)
 item      = world_api.get_type_by_name('D1 Fuel')[0]
-system    = world_api.get_system_by_name('O58-BSK')[0]   # includes gateLinks
+system    = world_api.get_system_by_name('EQN-M88')[0]   # includes gateLinks
 ship      = world_api.get_ship_by_id(87847)
 tribe     = world_api.get_tribe_by_name('ICA')[0]
 ore_map   = world_api.get_ore_map()
