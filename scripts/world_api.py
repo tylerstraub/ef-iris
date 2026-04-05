@@ -400,6 +400,7 @@ def cmd_ships(args):
     rows.sort(key=lambda r: (r[1], r[2]))
     _table(rows, ["ID", "Class", "Name"])
     print(f"\nUse 'ship <id>' for full stats (slots, HP, fuel capacity, physics)")
+    print(f"Note: additional hulls may appear in 'types --category Ship' before CCP adds them here.")
 
 
 def cmd_ship(args):
@@ -409,14 +410,29 @@ def cmd_ship(args):
     except ValueError:
         print(f"Ship ID must be numeric (got: {args.query!r})", file=sys.stderr)
         sys.exit(1)
+    ship = None
     try:
         ship = get_ship_by_id(ship_id)
     except requests.HTTPError as e:
         if e.response.status_code == 404:
-            print(f"No ship found with ID: {ship_id}", file=sys.stderr)
+            # CCP /v2/ships endpoint is missing some hulls that exist in /v2/types
+            # (e.g. LAI 82425, Stride 91106, Carom 91107). Fall back to type lookup.
+            try:
+                t = get_type_by_id(ship_id)
+            except requests.HTTPError:
+                print(f"No ship found with ID: {ship_id}", file=sys.stderr)
+                sys.exit(1)
+            if args.json:
+                _json(t)
+                return
+            print(f"\n{t['name']}  [{t.get('category', 'Ship')}]  ID: {t['id']}")
+            print(f"  {t.get('description', '').splitlines()[0][:80]}" if t.get('description') else "")
+            print("\n  NOTE: Full ship stats (slots, HP, fuel, physics) are not yet available")
+            print("  for this hull in the CCP ships API. Showing type catalog entry only.")
+            return
         else:
             print(f"API error: {e}", file=sys.stderr)
-        sys.exit(1)
+            sys.exit(1)
 
     if args.json:
         _json(ship)
