@@ -1210,6 +1210,11 @@ def main():
     except RuntimeError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
+    except requests.exceptions.ConnectionError:
+        print("ERROR: Could not connect to Sui testnet GraphQL.", file=sys.stderr)
+        print(f"  Endpoint: {GRAPHQL_URL}", file=sys.stderr)
+        print("  Check your internet connection or try again later.", file=sys.stderr)
+        sys.exit(1)
     except requests.RequestException as e:
         print(f"Network error: {e}", file=sys.stderr)
         sys.exit(1)

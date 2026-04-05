@@ -551,7 +551,16 @@ def main():
         "cache-info":  cmd_cache_info,
         "cache-clear": cmd_cache_clear,
     }
-    dispatch[args.cmd](args)
+    try:
+        dispatch[args.cmd](args)
+    except requests.exceptions.ConnectionError:
+        print("ERROR: Could not connect to EVE Frontier World API.", file=sys.stderr)
+        print(f"  Endpoint: {BASE}", file=sys.stderr)
+        print("  Check your internet connection or try again later.", file=sys.stderr)
+        sys.exit(1)
+    except requests.exceptions.RequestException as e:
+        print(f"Network error: {e}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

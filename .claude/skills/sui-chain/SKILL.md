@@ -271,15 +271,18 @@ while True:
 
 ---
 
-## Object Counts (Stillness, 2026-04-04 snapshot)
+## Object Counts (Stillness, approximate — grows daily)
 
-| Type | Count | Notes |
+Counts below are a point-in-time reference; actual totals increase as players deploy structures.
+Query live counts with `python scripts/sui_chain.py assemblies --summary`.
+
+| Type | Count (approx) | Notes |
 |------|-------|-------|
 | Character | 8,050+ | All players, names + wallets public |
-| NetworkNode | 3,322 | Infrastructure |
-| Turret | 2,623 | 2 have active extensions (pkg `0x9029...`) |
-| StorageUnit | 1,547 | Full inventory in dynamic fields |
-| **Gate** | **14** | **No extensions installed — virgin territory** |
+| NetworkNode | 3,300+ | Infrastructure |
+| Turret | 2,600+ | Some have active extensions |
+| StorageUnit | 1,500+ | Full inventory in dynamic fields |
+| **Gate** | **~14** | Player smart gates — low count, high value |
 
 Stillness game launch: **2026-03-11 15:33 UTC**.
 

@@ -15,7 +15,7 @@ cd ef-iris
 pip install -r requirements.txt
 ```
 
-> **Note:** Examples below use `python`. On macOS/Linux, substitute `python3` if `python` is not found.
+> **Platform note:** Tested on Windows 11 / Python 3.13. Should work on macOS/Linux — substitute `python3` for `python` in all commands if needed. No OS-specific dependencies.
 
 That's it. No API keys, no accounts. Both skills hit public endpoints.
 
