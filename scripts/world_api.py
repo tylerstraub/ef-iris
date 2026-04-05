@@ -525,8 +525,8 @@ def main():
     p.add_argument("--all",  action="store_true", help="Include NPC corps")
     p.add_argument("--json", action="store_true")
 
-    p = sub.add_parser("tribe", help="Look up a tribe by name or short name")
-    p.add_argument("query", metavar="NAME_OR_SHORT")
+    p = sub.add_parser("tribe", help="Look up a tribe by name, short name, or numeric ID")
+    p.add_argument("query", metavar="NAME_OR_ID")
 
     p = sub.add_parser("ores", help="Body type -> ore mapping")
     p.add_argument("--json", action="store_true")

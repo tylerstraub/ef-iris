@@ -17,8 +17,10 @@ env/
 .DS_Store
 Thumbs.db
 
-# Claude Code local state
-.claude/settings.local.json
+# Claude Code generated state - only .claude/skills/ is intentional
+.claude/*
+!.claude/skills/
+!.claude/skills/**
 
 # Editor
 .vscode/

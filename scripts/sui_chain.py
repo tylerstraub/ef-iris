@@ -26,6 +26,8 @@ Usage:
   python scripts/sui_chain.py events assembly              # assembly lifecycle events
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import os
