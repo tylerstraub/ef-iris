@@ -46,7 +46,7 @@ python scripts/sui_chain.py kills --names
 python scripts/sui_chain.py gates
 ```
 
-See each script's `--help` or the skill docs in `.claude/skills/` for the full command reference.
+See the skill docs in `.claude/skills/` for the full command reference.
 
 ## What Gets Cached
 

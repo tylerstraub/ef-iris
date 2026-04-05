@@ -5,7 +5,7 @@ description: >
   state and jump traversals, assembly ONLINE/OFFLINE status, character name/wallet lookup,
   SSU inventory contents, network node fuel levels. Use when Commander asks about kills,
   who died, gate activity, which assemblies are online, or any live chain state.
-  Complements world-api (static data) and evedatacore (community index).
+  Complements world-api (static data) for full context on kills, assemblies, and players.
 allowed-tools:
   - Bash
 ---
@@ -14,7 +14,7 @@ allowed-tools:
 
 Live Sui blockchain queries for Stillness (live game, runs on Sui testnet).
 No local cache — chain data is real-time. All commands run from project root.
-Client lives at `scripts/sui_chain.py`. Full research reference: `docs/research/sui-chain-queries.md`.
+Client lives at `scripts/sui_chain.py`.
 
 **What it covers:** kill events, gate jump traversals, assembly state (ONLINE/OFFLINE),
 all player smart gates + extension state, character names + wallet lookup,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-EVE Frontier World API — authoritative data client with local SQLite cache.
+EVE Frontier World API - authoritative data client with local SQLite cache.
 Primary data source for all static game data. Cache-first: API is only hit
 when data is absent or expired. Stillness (live) environment by default.
 
@@ -17,14 +17,14 @@ Usage:
   python scripts/world_api.py types --search fuel           # partial name search
   python scripts/world_api.py type 77811                    # single type by ID
   python scripts/world_api.py type "Hydrated Sulfide Matrix" # by exact name
-  python scripts/world_api.py type fuel                     # partial — shows suggestions
+  python scripts/world_api.py type fuel                     # partial - shows suggestions
   python scripts/world_api.py system EQN-M88                # system by name
   python scripts/world_api.py system 30020654               # system by ID
   python scripts/world_api.py ships                         # list all ship hulls
   python scripts/world_api.py ship 87847                    # full ship stats by ID
   python scripts/world_api.py tribes                        # all player tribes
-  python scripts/world_api.py tribe ICA                     # tribe by short name
-  python scripts/world_api.py ores                          # body type → ore map
+  python scripts/world_api.py tribe ICA                     # tribe by short name or numeric ID
+  python scripts/world_api.py ores                          # body type -> ore map
   python scripts/world_api.py cache-info                    # cache stats
   python scripts/world_api.py cache-clear                   # wipe cache
 """
@@ -114,7 +114,7 @@ def get_type_by_id(type_id):
 
 
 def get_type_by_name(name):
-    """Find type(s) by exact name — case-insensitive, returns list."""
+    """Find type(s) by exact name - case-insensitive, returns list."""
     name_lower = name.lower()
     return [t for t in get_types() if t["name"].lower() == name_lower]
 
@@ -125,12 +125,12 @@ def get_systems():
 
 
 def get_system_by_id(system_id):
-    """Single system by numeric ID — includes gateLinks (CCP gates only)."""
+    """Single system by numeric ID - includes gateLinks (CCP gates only)."""
     return _get(f"/v2/solarsystems/{int(system_id)}")
 
 
 def get_system_by_name(name):
-    """Find system(s) by exact name — searches full cached list, returns with gateLinks."""
+    """Find system(s) by exact name - searches full cached list, returns with gateLinks."""
     name_lower = name.lower()
     matches = [s for s in get_systems() if s["name"].lower() == name_lower]
     if len(matches) == 1:
@@ -140,7 +140,7 @@ def get_system_by_name(name):
 
 
 def get_ships():
-    """All ship hulls (catalog only — use get_ship_by_id for full stats)."""
+    """All ship hulls (catalog only - use get_ship_by_id for full stats)."""
     return _get_all("/v2/ships")
 
 
@@ -155,10 +155,14 @@ def get_tribes():
 
 
 def get_tribe_by_name(name):
-    """Find tribe by full name or short name — case-insensitive."""
-    name_lower = name.lower()
+    """Find tribe by full name, short name, or numeric ID - case-insensitive."""
+    tribes = get_tribes()
+    if str(name).isdigit():
+        tribe_id = int(name)
+        return [t for t in tribes if t.get("id") == tribe_id]
+    name_lower = str(name).lower()
     return [
-        t for t in get_tribes()
+        t for t in tribes
         if t["name"].lower() == name_lower or t["nameShort"].lower() == name_lower
     ]
 
@@ -169,7 +173,7 @@ def get_constellations():
 
 
 def get_config():
-    """API config — returns podPublicSigningKey for EVE Vault POD verification."""
+    """API config - returns podPublicSigningKey for EVE Vault POD verification."""
     data = _get("/config")
     # API returns a list with one entry
     return data[0] if isinstance(data, list) and data else data
@@ -181,14 +185,14 @@ def get_config():
 
 def get_ore_map():
     """
-    Body type → {body, ores} mapping for all asteroid types.
+    Body type -> {body, ores} mapping for all asteroid types.
 
     Two group layouts in the data:
       Standard: body item in group "Slag" + ore items in group "Slag Ores"
       Flat:     all items share one group name (Rift, Synthetic Hermetite,
-                Deep-Core Carbon Asteroid) — no distinct body type item.
+                Deep-Core Carbon Asteroid) - no distinct body type item.
 
-    Body type items have IDs in the 91370–91389 range.
+    Body type items have IDs in the 91370-91389 range.
     """
     asteroids = get_types(category="Asteroid")
 
@@ -204,7 +208,7 @@ def get_ore_map():
             key = t["groupName"].replace(" Ores", "")
             ores_by_body.setdefault(key, []).append(t)
 
-    # Groups with no "[Body] Ores" counterpart — all items are ores
+    # Groups with no "[Body] Ores" counterpart - all items are ores
     skip = set(body_by_group) | {g + " Ores" for g in body_by_group} | {"Natural Resources"}
     flat_groups = {}
     for t in asteroids:
@@ -225,7 +229,7 @@ def get_ore_map():
 # ---------------------------------------------------------------------------
 
 def cache_info():
-    """Cache statistics — entry counts and per-endpoint TTL breakdown."""
+    """Cache statistics - entry counts and per-endpoint TTL breakdown."""
     responses = session.cache.responses
     keys = list(responses.keys())
     now = datetime.now(timezone.utc)
@@ -353,7 +357,7 @@ def cmd_type(args):
     if len(suggestions) == 1:
         _json(get_type_by_id(suggestions[0]["id"]))
         return
-    # Multiple partial matches — show a table of options
+    # Multiple partial matches - show a table of options
     rows = [(t["id"], t["categoryName"], t["groupName"], t["name"]) for t in suggestions]
     rows.sort(key=lambda r: (r[1], r[2], r[3]))
     print(f"No exact match for {args.query!r}. Did you mean one of these?\n")
@@ -492,7 +496,7 @@ def cmd_cache_clear(_args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="EVE Frontier World API — cached data client",
+        description="EVE Frontier World API - cached data client",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
@@ -524,7 +528,7 @@ def main():
     p = sub.add_parser("tribe", help="Look up a tribe by name or short name")
     p.add_argument("query", metavar="NAME_OR_SHORT")
 
-    p = sub.add_parser("ores", help="Body type → ore mapping")
+    p = sub.add_parser("ores", help="Body type -> ore mapping")
     p.add_argument("--json", action="store_true")
 
     sub.add_parser("cache-info",  help="Show cache stats and TTL breakdown")

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-EVE Frontier Sui Chain — on-chain data client.
+EVE Frontier Sui Chain - on-chain data client.
 Queries kill events, assembly state, gate events, characters, and SSU inventory via Sui GraphQL.
 
-No local cache — chain data is live. Use --limit to control scope.
+No local cache - chain data is live. Use --limit to control scope.
 Endpoint: Sui testnet GraphQL (Stillness is the live game, runs on testnet).
 
 Usage:
@@ -101,7 +101,7 @@ def get_kills(limit: int = 20, loss_type: str = None) -> list[dict]:
 
     Args:
         limit:     Maximum results to return (capped at 50 when no filter).
-        loss_type: Optional filter — 'SHIP' or 'STRUCTURE'. When set,
+        loss_type: Optional filter - 'SHIP' or 'STRUCTURE'. When set,
                    paginates backward up to 5 pages (250 events) to find matches.
 
     Returns list of dicts:
@@ -124,7 +124,7 @@ def get_kills(limit: int = 20, loss_type: str = None) -> list[dict]:
         }
 
     if not loss_type:
-        # Single page — return the most recent min(limit, PAGE_MAX) kills
+        # Single page - return the most recent min(limit, PAGE_MAX) kills
         fetch = min(limit, _PAGE_MAX)
         data = _graphql(f"""
         {{
@@ -179,7 +179,7 @@ def get_kills(limit: int = 20, loss_type: str = None) -> list[dict]:
 
 def get_gate_jumps(limit: int = 20) -> list[dict]:
     """
-    Recent gate jump events (JumpEvent only — player traversals).
+    Recent gate jump events (JumpEvent only - player traversals).
 
     Returns list of dicts:
         source_gate_id, destination_gate_id, character_id,
@@ -370,7 +370,7 @@ def get_assemblies(status_filter: str = None) -> list[dict]:
     All on-chain Assembly objects with current lifecycle status.
 
     Args:
-        status_filter: Optional — 'ONLINE' | 'OFFLINE'. None returns all.
+        status_filter: Optional - 'ONLINE' | 'OFFLINE'. None returns all.
 
     Returns list of dicts:
         object_address, game_id, type_id, status (ONLINE/OFFLINE), owner_cap_id
@@ -460,7 +460,7 @@ def get_character_by_wallet(wallet: str) -> dict | None:
     Returns dict: game_id, name, tribe_id, wallet, owner_cap_id, char_sui_id
     or None if not found.
     """
-    # address().objects returns MoveObject directly — no asMoveObject wrapper
+    # address().objects returns MoveObject directly - no asMoveObject wrapper
     data = _graphql(f"""
     {{
       address(address: "{wallet}") {{
@@ -511,7 +511,7 @@ def _get_character_by_sui_id(char_sui_id: str) -> dict | None:
 
 def get_network_nodes(limit: int = 50) -> list[dict]:
     """
-    Network nodes with fuel state (read directly from object — no events needed).
+    Network nodes with fuel state (read directly from object - no events needed).
 
     Returns list of dicts:
         object_address, game_id, name, status, fuel_qty, fuel_max, fuel_type_id,
@@ -599,7 +599,7 @@ def get_ssu_inventory(game_id: str) -> dict | None:
             c = node["asMoveObject"]["contents"]["json"]
             if c["key"]["item_id"] != str(game_id):
                 continue
-            # Found it — parse inventory from dynamic fields
+            # Found it - parse inventory from dynamic fields
             inventory = []
             df = node["asMoveObject"].get("dynamicFields", {}).get("nodes", [])
             for field in df:
@@ -625,7 +625,7 @@ def get_ssu_inventory(game_id: str) -> dict | None:
 
 
 # ---------------------------------------------------------------------------
-# Enrichment helpers — resolve IDs to human-readable names
+# Enrichment helpers - resolve IDs to human-readable names
 # ---------------------------------------------------------------------------
 
 # Lazy-loaded in-process caches (populated on first use per process)
@@ -638,7 +638,7 @@ _CHAR_CACHE_PATH = Path(__file__).parent.parent / ".cache" / "characters.sqlite"
 def get_system_map() -> dict:
     """
     Returns {solar_system_id_str: system_name} for all systems.
-    Loaded from world_api SQLite cache — fast after first fetch.
+    Loaded from world_api SQLite cache - fast after first fetch.
     """
     global _system_map
     if _system_map is None:
@@ -651,7 +651,7 @@ def get_system_map() -> dict:
 def get_type_map() -> dict:
     """
     Returns {type_id_str: type_name} for all item types.
-    Loaded from world_api SQLite cache — fast after first fetch.
+    Loaded from world_api SQLite cache - fast after first fetch.
     """
     global _type_map
     if _type_map is None:
@@ -664,7 +664,7 @@ def get_type_map() -> dict:
 def build_char_cache(force: bool = False) -> None:
     """
     Scan all on-chain Character objects and persist to local SQLite cache.
-    Safe to call repeatedly — only re-scans if forced or cache is missing.
+    Safe to call repeatedly - only re-scans if forced or cache is missing.
     ~8,000+ characters; takes 30-90s on first run, instant after.
     """
     _CHAR_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -725,7 +725,7 @@ def resolve_characters(game_ids: list[str]) -> dict:
     """
     Resolve a list of game IDs to character names using local SQLite cache.
     Call build_char_cache() first if the cache may not exist.
-    Returns {game_id: name} — missing IDs map to the raw game_id string.
+    Returns {game_id: name} - missing IDs map to the raw game_id string.
     """
     if not _CHAR_CACHE_PATH.exists():
         return {gid: gid for gid in game_ids}
@@ -765,7 +765,7 @@ def _table(rows, headers):
 
 
 def _fmt_time(ts: str) -> str:
-    """ISO 8601 or Unix seconds → readable UTC timestamp."""
+    """ISO 8601 or Unix seconds -> readable UTC timestamp."""
     try:
         if "T" in str(ts):
             dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
@@ -793,7 +793,7 @@ def cmd_kills(args):
         _json(kills)
         return
 
-    # Always resolve system names (world_api cache — free)
+    # Always resolve system names (world_api cache - free)
     systems = get_system_map()
 
     # Optionally resolve character names (local SQLite cache)
@@ -947,7 +947,7 @@ def cmd_gate_events(args):
         _json(jumps)
         return
 
-    # Build gate name map for readable output (only 14 gates — fast)
+    # Build gate name map for readable output (only 14 gates - fast)
     gate_names = {}
     try:
         for g in get_all_gates():
@@ -981,7 +981,7 @@ def cmd_character(args):
             print(f"No character found for wallet {query}", file=sys.stderr)
             sys.exit(1)
     else:
-        # Game ID — scan characters to find match
+        # Game ID - scan characters to find match
         print(f"Scanning characters for game ID {query}...", file=sys.stderr)
         cursor = None
         char = None
@@ -1127,7 +1127,7 @@ def cmd_events(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="EVE Frontier Sui Chain — on-chain data client",
+        description="EVE Frontier Sui Chain - on-chain data client",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
     )
